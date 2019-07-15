@@ -1,6 +1,10 @@
 class UserController < ApplicationController
     before_action :authorize_request, except: [:createUser, :getAllUsers, :getUserById]
-    before_action :findUser, only:[:setAdmin, :unsetAdmin]
+    before_action :findUser, only:[:setAdmin, :unsetAdmin, :getUserById]
+
+    def getCurrentUser
+        render :json=> {code:"00", message:@current_user}, status: :ok
+    end
     def createUser
         @new_user=User.new(user_params)
         if @new_user.save
@@ -35,7 +39,39 @@ class UserController < ApplicationController
         end 
     end
 
+    def getUserById
+        render :json=> {code:"00", message:@user}, status: :ok
+    end
 
+    def getAllUsers
+        @users= User.all
+        render :json=>{code:"00", message:@users}
+    end
+
+    def editUser
+        if @current_user.update(edit_params)
+            render :json=>{code:"00", message:"update successful"}, status: :ok
+        else
+            render :json=>{code:"01", message:@current_user.errors}
+        end
+    end
+
+    def editPassword 
+        if @current_user&.authenticate(params[:old_password])
+            @current_user.update(user_edit_password)
+                render :json=>{message:"password updated successfully"}
+         else
+                render :json=>{message:"authorization failed"}
+        end
+    end
+
+    def deleteUser
+        if @current_user.destroy
+            render :json=>{message:"user deleted successfully"}, status: :ok
+        else
+            render :json=>{message:"error deleting user"}
+        end
+    end
     private
 
     def findUser
@@ -46,6 +82,17 @@ class UserController < ApplicationController
         params.permit(
            :name, :email, :password, :password_confirmation, :isAdmin
           )
+    end
+
+    def edit_params
+        
+        params.permit(
+           :name, :email
+          )
+    end
+
+    def user_edit_password
+        params.permit(:password)
     end
 
     def makeAdmin
