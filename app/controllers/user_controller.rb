@@ -5,19 +5,19 @@ class UserController < ApplicationController
         @new_user=User.new(user_params)
         if @new_user.save
             token = JsonWebToken.encode(user_id: @new_user.id)
-            render :json=>{code:"00", message:"user created successfully", token:token}
+            render :json=>{code:"00", message:"user created successfully", token:token}, status: :ok
         else
-            render :json=>{code:"01", message:@new_user.errors}
+            render :json=>{code:"01", message:@new_user.errors}, status: :unprocessable_entity
         end
     end
 
     def setAdmin
         if @user.isAdmin == true
-         render :json=>{code:"01", message:@user.name+ " is already an admin"}
+         render :json=>{code:"01", message:@user.name+ " is already an admin"}, status: :ok
         elsif @user.update(makeAdmin)
-            render :json=>{code:"00", message:@user.name+ " is now an admin"}
+            render :json=>{code:"00", message:@user.name+ " is now an admin"}, status: :ok
         else
-            render :json=>{code:"01", message:"error making "+ @user.name+ " an admin"}
+            render :json=>{code:"01", message:"error making "+ @user.name+ " an admin"}, status: :unprocessable_entity
         end 
     end
 
