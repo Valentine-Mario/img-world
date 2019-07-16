@@ -20,5 +20,7 @@ Rails.application.routes.draw do
     post '/add', :to=>"gallery#createPost"
     get '/get', :to=>"gallery#getAllPost"
     get '/get/:id', :to=>"gallery#getPostId"
+    get '/getuser', :to=>"gallery#getPostForUser"
+    post '/edit/:id', :to=>"gallery#editPost"
   end
 end
