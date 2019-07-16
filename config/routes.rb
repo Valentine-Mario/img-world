@@ -24,5 +24,6 @@ Rails.application.routes.draw do
     post '/edit/:id', :to=>"gallery#editPost"
     post '/addpics/:id', :to=>"gallery#addExtraPhoto"
     get '/deletepics/:id', :to=>"gallery#deletePhoto"
+    get '/delete/:id', :to=>"gallery#deletePost"
   end
 end

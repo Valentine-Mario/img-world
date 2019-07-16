@@ -1,8 +1,8 @@
 class GalleryController < ApplicationController
     include Rails.application.routes.url_helpers
     before_action :authorize_request, except:[:getAllPost, :getPostId]
-    before_action :findPost, only:[:getPostId, :editPost, :addExtraPhoto]
-    before_action :set_post_user, only:[:editPost, :addExtraPhoto]
+    before_action :findPost, only:[:getPostId, :editPost, :addExtraPhoto, :deletePost]
+    before_action :set_post_user, only:[:editPost, :addExtraPhoto, :deletePost]
     respond_to :html, :json
     def createPost
         
@@ -67,8 +67,12 @@ class GalleryController < ApplicationController
     def deletePhoto
         attachment = ActiveStorage::Attachment.find(params[:id])
         attachment.purge # or use purge_later
-            render :json=>{code:"00", message:"image deleted successfully"}
-        
+            render :json=>{code:"00", message:"image deleted successfully"}   
+    end
+
+    def deletePost
+        @post.destroy
+        render :json =>{message:"delete successful"}
     end
 
     private
