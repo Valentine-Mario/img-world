@@ -41,6 +41,7 @@ group :development do
   gem 'devise', '~> 4.3'
   gem 'bcrypt', git: 'https://github.com/codahale/bcrypt-ruby.git', :require => 'bcrypt'
   gem 'jwt'
+  gem "aws-sdk-s3", require: false
 end
 
 

@@ -17,6 +17,8 @@ Rails.application.routes.draw do
 
   #gallery routes
   scope 'gallery' do
-    
+    post '/add', :to=>"gallery#createPost"
+    get '/get', :to=>"gallery#getAllPost"
+    get '/get/:id', :to=>"gallery#getPostId"
   end
 end

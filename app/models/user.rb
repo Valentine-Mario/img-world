@@ -2,7 +2,7 @@ class User < ApplicationRecord
     has_secure_password
     after_initialize :set_defaults, unless: :persisted?
   # The set_defaults will only work if the object is new
-
+  has_many :galleries, dependent: :destroy
   def set_defaults
     self.isAdmin = false
   end
