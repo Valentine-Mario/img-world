@@ -1,8 +1,8 @@
 class GalleryController < ApplicationController
     include Rails.application.routes.url_helpers
     before_action :authorize_request, except:[:getAllPost, :getPostId]
-    before_action :findPost, only:[:getPostId, :editPost]
-    before_action :set_post_user, only:[:editPost]
+    before_action :findPost, only:[:getPostId, :editPost, :addExtraPhoto]
+    before_action :set_post_user, only:[:editPost, :addExtraPhoto]
     respond_to :html, :json
     def createPost
         
@@ -24,7 +24,7 @@ class GalleryController < ApplicationController
         for i in @gallery do
             #pics = rails_blob_url(i.pics)
             pics= i.pics.map{|img| ({ image: url_for(img) })}
-            arr.push({pics:pics, content:i})   
+            arr.push({images:pics, content:i})   
         end
          render :json=>{code:"00", message:arr}
     end
@@ -33,7 +33,7 @@ class GalleryController < ApplicationController
         # pics= rails_blob_url(@post_id.pics)
         # render :json=>{code:"00", message:@post_id, image:pics}
        image= @post_id.pics.map{|img| ({ image: url_for(img) })}
-       render :json=>{code:"00", message:@post_id, pics:image}
+       render :json=>{code:"00", message:@post_id, images:image}, :include=>[:pics]
     end
 
     def getPostForUser
@@ -42,7 +42,7 @@ class GalleryController < ApplicationController
         for i in @user_post do
             #pics = rails_blob_url(i.pics)
             pics= i.pics.map{|img| ({ image: url_for(img) })}
-            arr.push({pics:pics, content:i})   
+            arr.push({images:pics, content:i})   
         end
         render :json=>{code:"00", message:arr}
     end
@@ -53,6 +53,22 @@ class GalleryController < ApplicationController
         else
             render :json=>{code:"01", message:"error updating title"}
         end
+    end
+
+    def addExtraPhoto
+        @post.pics.attach(params[:pics])
+        if @post.save
+            render :json=>{code:"00", message:"image uploaded successfully"}
+        else
+            render :json=>{code:"01", message:@post.errors}
+        end
+    end
+
+    def deletePhoto
+        attachment = ActiveStorage::Attachment.find(params[:id])
+        attachment.purge # or use purge_later
+            render :json=>{code:"00", message:"image deleted successfully"}
+        
     end
 
     private
