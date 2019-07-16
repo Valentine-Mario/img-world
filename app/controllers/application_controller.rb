@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-    
+    include ActionController::MimeResponds
     def authorize_request
         header = request.headers['Authorization']
         header = header.split(' ').last if header
