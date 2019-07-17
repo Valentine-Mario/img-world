@@ -1,7 +1,7 @@
 class CommentController < ApplicationController
     before_action :authorize_request, except:[:getAllCommentForGallery]
     before_action :set_gallery, only:[:getAllCommentForGallery]
-    before_action :set_comment_user, only:[:editComment]
+    before_action :set_comment_user, only:[:editComment, :deleteComment]
 
     def addComment
         @gallery = Gallery.find(params[:gallery_id])
@@ -25,6 +25,11 @@ class CommentController < ApplicationController
         else
             render :json=>{code:"01", message:"error making update"}
         end
+    end
+
+    def deleteComment
+        @comment.destroy
+        render :json=>{code:"00", message:"comment deleted successfully"}
     end
 
     private

@@ -32,5 +32,6 @@ Rails.application.routes.draw do
     post '/add/:gallery_id', :to=>"comment#addComment"
     get '/get/:id', :to=>"comment#getAllCommentForGallery"
     post '/edit/:id', :to=>"comment#editComment"
+    get '/delete/:id', :to=>"comment#deleteComment"
   end
 end
