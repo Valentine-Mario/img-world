@@ -31,5 +31,6 @@ Rails.application.routes.draw do
   scope 'comment' do
     post '/add/:gallery_id', :to=>"comment#addComment"
     get '/get/:id', :to=>"comment#getAllCommentForGallery"
+    post '/edit/:id', :to=>"comment#editComment"
   end
 end

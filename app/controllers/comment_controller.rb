@@ -1,6 +1,7 @@
 class CommentController < ApplicationController
-    before_action :authorize_request, except:[:getAllComment]
+    before_action :authorize_request, except:[:getAllCommentForGallery]
     before_action :set_gallery, only:[:getAllCommentForGallery]
+    before_action :set_comment_user, only:[:editComment]
 
     def addComment
         @gallery = Gallery.find(params[:gallery_id])
@@ -18,6 +19,14 @@ class CommentController < ApplicationController
         render :json=>{code:"00", message:@gallery_comment}
     end
 
+    def editComment
+        if @comment.update(comment_param)
+            render :json=>{code:"00", message:"update successful"}
+        else
+            render :json=>{code:"01", message:"error making update"}
+        end
+    end
+
     private
 
     def set_gallery
@@ -27,5 +36,9 @@ class CommentController < ApplicationController
     def comment_param
         params.permit(:comment)
     end
+
+    def set_comment_user
+        @comment = @current_user.comments.find_by!(id: params[:id]) if @current_user
+      end
    
 end
