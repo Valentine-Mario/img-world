@@ -38,5 +38,6 @@ Rails.application.routes.draw do
   #pin routes
   scope 'pin' do
     get '/add/:gallery_id', :to=>"pin#addPin"
+    get "/get", :to=>"pin#getPins"
   end
 end
