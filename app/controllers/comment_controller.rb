@@ -1,5 +1,6 @@
 class CommentController < ApplicationController
     before_action :authorize_request, except:[:getAllComment]
+    before_action :set_gallery, only:[:getAllCommentForGallery]
 
     def addComment
         @gallery = Gallery.find(params[:gallery_id])
@@ -12,7 +13,17 @@ class CommentController < ApplicationController
         end
     end
 
+    def getAllCommentForGallery
+        @gallery_comment=@post_id.comments
+        render :json=>{code:"00", message:@gallery_comment}
+    end
+
     private
+
+    def set_gallery
+        @post_id = Gallery.find(params[:id])
+    end
+
     def comment_param
         params.permit(:comment)
     end
