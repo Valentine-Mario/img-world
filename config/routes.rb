@@ -34,4 +34,9 @@ Rails.application.routes.draw do
     post '/edit/:id', :to=>"comment#editComment"
     get '/delete/:id', :to=>"comment#deleteComment"
   end
+
+  #pin routes
+  scope 'pin' do
+    get '/add/:gallery_id', :to=>"pin#addPin"
+  end
 end

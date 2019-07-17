@@ -4,6 +4,7 @@ class User < ApplicationRecord
   # The set_defaults will only work if the object is new
   has_many :galleries, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :pins, dependent: :destroy
   def set_defaults
     self.isAdmin = false
   end

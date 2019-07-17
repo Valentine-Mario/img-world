@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_17_094936) do
+ActiveRecord::Schema.define(version: 2019_07_17_124125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,15 @@ ActiveRecord::Schema.define(version: 2019_07_17_094936) do
     t.index ["user_id"], name: "index_galleries_on_user_id"
   end
 
+  create_table "pins", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "gallery_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gallery_id"], name: "index_pins_on_gallery_id"
+    t.index ["user_id"], name: "index_pins_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -67,4 +76,6 @@ ActiveRecord::Schema.define(version: 2019_07_17_094936) do
   add_foreign_key "comments", "galleries"
   add_foreign_key "comments", "users"
   add_foreign_key "galleries", "users"
+  add_foreign_key "pins", "galleries"
+  add_foreign_key "pins", "users"
 end
