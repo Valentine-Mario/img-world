@@ -26,4 +26,9 @@ Rails.application.routes.draw do
     get '/deletepics/:id', :to=>"gallery#deletePhoto"
     get '/delete/:id', :to=>"gallery#deletePost"
   end
+
+  #comment routes
+  scope 'comment' do
+    post '/add/:gallery_id', :to=>"comment#addComment"
+  end
 end

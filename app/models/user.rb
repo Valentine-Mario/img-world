@@ -3,6 +3,7 @@ class User < ApplicationRecord
     after_initialize :set_defaults, unless: :persisted?
   # The set_defaults will only work if the object is new
   has_many :galleries, dependent: :destroy
+  has_many :comments, dependent: :destroy
   def set_defaults
     self.isAdmin = false
   end
