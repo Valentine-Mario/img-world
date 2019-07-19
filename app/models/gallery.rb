@@ -4,5 +4,5 @@ class Gallery < ApplicationRecord
   validates_presence_of :title
   has_many :comments, dependent: :destroy
   has_many :pins, dependent: :destroy
-
+  
 end

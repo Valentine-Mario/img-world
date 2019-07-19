@@ -1,6 +1,6 @@
 class GalleryController < ApplicationController
     include Rails.application.routes.url_helpers
-    before_action :authorize_request, except:[:getAllPost, :getPostId]
+    before_action :authorize_request, except:[:getAllPost, :getPostId, :searchPost]
     before_action :findPost, only:[:getPostId, :editPost, :addExtraPhoto, :deletePost]
     before_action :set_post_user, only:[:editPost, :addExtraPhoto, :deletePost]
     respond_to :html, :json
@@ -19,7 +19,7 @@ class GalleryController < ApplicationController
     end
 
     def getAllPost
-        @gallery= Gallery.all
+        @gallery= Gallery.all.order('created_at DESC')
         arr=[]
         for i in @gallery do
             #pics = rails_blob_url(i.pics)
@@ -27,6 +27,16 @@ class GalleryController < ApplicationController
             arr.push({images:pics, content:i})   
         end
          render :json=>{code:"00", message:arr}
+    end
+
+    def searchPost
+        @posts = Gallery.where("title LIKE ? ", "%#{params[:title]}%").order("created_at DESC")
+        arr=[]
+        for i in @posts do
+            pics= i.pics.map{|img| ({ image: url_for(img) })}
+            arr.push({images:pics, content:i})  
+        end
+        render :json=>{code:"00", message:arr}
     end
 
     def getPostId
@@ -37,7 +47,7 @@ class GalleryController < ApplicationController
     end
 
     def getPostForUser
-        @user_post=@current_user.galleries
+        @user_post=@current_user.galleries.order('created_at DESC')
         arr=[]
         for i in @user_post do
             #pics = rails_blob_url(i.pics)

@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     post '/addpics/:id', :to=>"gallery#addExtraPhoto"
     get '/deletepics/:id', :to=>"gallery#deletePhoto"
     get '/delete/:id', :to=>"gallery#deletePost"
+    get '/search/:title', :to=>"gallery#searchPost"
   end
 
   #comment routes
@@ -39,5 +40,6 @@ Rails.application.routes.draw do
   scope 'pin' do
     get '/add/:gallery_id', :to=>"pin#addPin"
     get "/get", :to=>"pin#getPins"
+    get "/remove/:id", :to=>"pin#removePin"
   end
 end

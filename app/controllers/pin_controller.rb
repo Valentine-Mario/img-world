@@ -1,11 +1,13 @@
 class PinController < ApplicationController
     before_action :authorize_request
+    before_action :set_pin_user, only:[:removePin]
     include Rails.application.routes.url_helpers
     def addPin 
         @user_pin=@current_user.pins
         for i in @user_pin do     
             if i.gallery_id.equal?(params[:gallery_id].to_i)
-                found=true  
+                found=true
+                break;  
             else
                 found=false  
             end
@@ -27,12 +29,21 @@ class PinController < ApplicationController
     def getPins
         @user_pin=@current_user.pins
         arr=[]
-        arr2=[]
         for i in @user_pin do
             @gallery=Gallery.find(i.gallery_id)
-            arr.push(@gallery)
+            arr.push({content:@gallery, details:i})
         end
-        
         render :json=>{code:"00", message:arr}
     end
+
+    def removePin
+        @pin.destroy
+        render :json=>{code:"00", message:"item unpinned successfully"}
+    end
+
+    private
+    def set_pin_user
+        @pin = @current_user.pins.find_by!(id: params[:id]) if @current_user
+      end
+    
 end
