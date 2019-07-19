@@ -1,7 +1,7 @@
 class GalleryController < ApplicationController
     include Rails.application.routes.url_helpers
     before_action :authorize_request, except:[:getAllPost, :getPostId, :searchPost]
-    before_action :findPost, only:[:getPostId, :editPost, :addExtraPhoto, :deletePost]
+    before_action :findPost, only:[:getPostId, :getPostIdUser, :editPost, :addExtraPhoto, :deletePost]
     before_action :set_post_user, only:[:editPost, :addExtraPhoto, :deletePost]
     respond_to :html, :json
     def createPost
@@ -23,8 +23,9 @@ class GalleryController < ApplicationController
         arr=[]
         for i in @gallery do
             #pics = rails_blob_url(i.pics)
+            @user_details=User.find(i.user_id)
             pics= i.pics.map{|img| ({ image: url_for(img) })}
-            arr.push({images:pics, content:i})   
+            arr.push({images:pics, content:i, user:@user_details})   
         end
          render :json=>{code:"00", message:arr}
     end
@@ -33,8 +34,9 @@ class GalleryController < ApplicationController
         @posts = Gallery.where("title LIKE ? ", "%#{params[:title]}%").order("created_at DESC")
         arr=[]
         for i in @posts do
+            @user_details=User.find(i.user_id)
             pics= i.pics.map{|img| ({ image: url_for(img) })}
-            arr.push({images:pics, content:i})  
+            arr.push({images:pics, content:i, user:@user_details})  
         end
         render :json=>{code:"00", message:arr}
     end
@@ -42,7 +44,18 @@ class GalleryController < ApplicationController
     def getPostId
         # pics= rails_blob_url(@post_id.pics)
         # render :json=>{code:"00", message:@post_id, image:pics}
+        @user=User.find(@post_id.user_id)
        image= @post_id.pics.map{|img| ({ image: url_for(img) })}
+
+       render :json=>{code:"00", message:@post_id, images:image, user:@user}
+    end
+
+    def getPostIdUser
+        # pics= rails_blob_url(@post_id.pics)
+        # render :json=>{code:"00", message:@post_id, image:pics}
+        @user=User.find(@post_id.user_id)
+       image= @post_id.pics.map{|img| ({ image: url_for(img) })}
+
        render :json=>{code:"00", message:@post_id, images:image}, :include=>[:pics]
     end
 

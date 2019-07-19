@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     get '/deletepics/:id', :to=>"gallery#deletePhoto"
     get '/delete/:id', :to=>"gallery#deletePost"
     get '/search/:title', :to=>"gallery#searchPost"
+    get '/getuser/:id', :to=>"gallery#getPostIdUser"
   end
 
   #comment routes

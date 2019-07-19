@@ -16,7 +16,12 @@ class CommentController < ApplicationController
 
     def getAllCommentForGallery
         @gallery_comment=@post_id.comments
-        render :json=>{code:"00", message:@gallery_comment}
+        arr=[]
+        for i in @gallery_comment do
+            @user=User.find(i.user_id)
+            arr.push(user:@user, comment:i) 
+        end
+        render :json=>{code:"00", message:arr}
     end
 
     def editComment
