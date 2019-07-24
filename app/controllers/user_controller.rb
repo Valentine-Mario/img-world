@@ -8,6 +8,8 @@ class UserController < ApplicationController
     def createUser
         @new_user=User.new(user_params)
         if @new_user.save
+                # Sends email to user when user is created.
+                UserMailer.email(@new_user).deliver
             token = JsonWebToken.encode(user_id: @new_user.id)
             render :json=>{code:"00", message:"user created successfully", token:token}, status: :ok
         else
