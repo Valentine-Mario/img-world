@@ -2,6 +2,7 @@ class PinController < ApplicationController
     before_action :authorize_request
     before_action :set_pin_user, only:[:removePin]
     include Rails.application.routes.url_helpers
+    respond_to :html, :json
     def addPin 
         @user_pin=@current_user.pins
         for i in @user_pin do     
@@ -27,13 +28,11 @@ class PinController < ApplicationController
     end
 
     def getPins
-        @user_pin=@current_user.pins
-        arr=[]
-        for i in @user_pin do
-            @gallery=Gallery.find(i.gallery_id)
-            arr.push({content:@gallery, details:i})
+        @user_pin=@current_user.pins.paginate(page: params[:page], per_page: params[:per_page])
+        respond_to do |format|
+            format.json{ render :json=>@user_pin.to_json(:include=> :gallery)}
         end
-        render :json=>{code:"00", message:arr}
+        
     end
 
     def removePin

@@ -42,6 +42,7 @@ group :development do
   gem 'bcrypt', git: 'https://github.com/codahale/bcrypt-ruby.git', :require => 'bcrypt'
   gem 'jwt'
   gem "aws-sdk-s3", require: false
+  gem 'will_paginate', '~> 3.1.0'
 end
 
 

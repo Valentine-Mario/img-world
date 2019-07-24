@@ -19,7 +19,8 @@ class GalleryController < ApplicationController
     end
 
     def getAllPost
-        @gallery= Gallery.all.order('created_at DESC')
+        @gallery= Gallery.paginate(page: params[:page], per_page: params[:per_page]).order("created_at DESC")
+       
         arr=[]
         for i in @gallery do
             #pics = rails_blob_url(i.pics)
@@ -27,11 +28,12 @@ class GalleryController < ApplicationController
             pics= i.pics.map{|img| ({ image: url_for(img) })}
             arr.push({images:pics, content:i, user:@user_details})   
         end
+       
          render :json=>{code:"00", message:arr}
     end
 
     def searchPost
-        @posts = Gallery.where("title LIKE ? ", "%#{params[:title]}%").order("created_at DESC")
+        @posts = Gallery.paginate(page: params[:page], per_page: params[:per_page]).where("title LIKE ? ", "%#{params[:title]}%").order("created_at DESC")
         arr=[]
         for i in @posts do
             @user_details=User.find(i.user_id)
@@ -46,21 +48,15 @@ class GalleryController < ApplicationController
         # render :json=>{code:"00", message:@post_id, image:pics}
         @user=User.find(@post_id.user_id)
        image= @post_id.pics.map{|img| ({ image: url_for(img) })}
-
-       render :json=>{code:"00", message:@post_id, images:image, user:@user}
+       respond_to do |format|
+        format.json{ render :json=>{image:image, message:@post_id}.to_json(:include=> [:user, :pics])}
+    end
     end
 
-    def getPostIdUser
-        # pics= rails_blob_url(@post_id.pics)
-        # render :json=>{code:"00", message:@post_id, image:pics}
-        @user=User.find(@post_id.user_id)
-       image= @post_id.pics.map{|img| ({ image: url_for(img) })}
-
-       render :json=>{code:"00", message:@post_id, images:image}, :include=>[:pics]
-    end
+    
 
     def getPostForUser
-        @user_post=@current_user.galleries.order('created_at DESC')
+        @user_post=@current_user.galleries.paginate(page: params[:page], per_page: params[:per_page]).order('created_at DESC')
         arr=[]
         for i in @user_post do
             #pics = rails_blob_url(i.pics)
